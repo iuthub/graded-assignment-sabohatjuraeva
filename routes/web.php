@@ -13,6 +13,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [
+    'uses' => 'TaskController@getIndex',
+    'as' => 'task.index'
+]);
+
+Route::group(['prefix' => 'admin', 	'middleware' => ['auth', 'verified']], function() {
+
+    Route::get('/', [
+        'uses' => 'TaskController@getAdminIndex',
+        'as'=> 'admin.index'
+    ]);
+
+    Route::get('/create', [
+        'uses' => 'TaskController@getAdminCreate',
+        'as' => 'admin.create'
+    ]);
+
+    Route::post('/create', [
+        'uses' => 'TaskController@postAdminCreate',
+        'as' => 'admin.create'
+    ]);
+
+    Route::get('/edit/{id}', [
+        'uses' => 'TaskController@getAdminEdit',
+        'as' => 'admin.edit'
+    ]);
+
+    Route::get('/delete/{id}', [
+        'uses' => 'TaskController@getAdminDelete',
+        'as' => 'admin.delete'
+    ]);
+
+    Route::post('/edit', [
+        'uses' => 'TaskController@postAdminUpdate',
+        'as' => 'admin.update'
+    ]);
 });
+
+Auth::routes(['verify' => true]);
